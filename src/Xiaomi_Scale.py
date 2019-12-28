@@ -33,8 +33,8 @@ MISCALE_MAC = os.getenv('MISCALE_MAC', '')
 MQTT_USERNAME = os.getenv('MQTT_USERNAME', '')
 MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', '')
 MQTT_HOST = os.getenv('MQTT_HOST', '127.0.0.1')
-MQTT_PORT = os.getenv('MQTT_PORT', 1883)
-MQTT_TIMEOUT = os.getenv('MQTT_TIMEOUT', 60)
+MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
+MQTT_TIMEOUT = int(os.getenv('MQTT_TIMEOUT', 60))
 MQTT_PREFIX = os.getenv('MQTT_PREFIX', '')
 
 # User Variables...

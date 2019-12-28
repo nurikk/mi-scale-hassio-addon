@@ -14,7 +14,7 @@ class bodyMetrics:
         if self.height > 220:
             raise Exception("Height is too high (limit: >220cm)")
         elif weight < 10 or weight > 200:
-            raise Exception("Weight is either too low or too high (limits: <10kg and >200kg)")
+            raise Exception("Weight ",weight," is either too low or too high (limits: <10kg and >200kg)")
         elif age > 99:
             raise Exception("Age is too high (limit >99 years)")
         elif impedance > 3000:
