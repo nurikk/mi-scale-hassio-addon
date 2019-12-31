@@ -21,6 +21,7 @@ import argparse
 import binascii
 import time
 import os
+import json
 import sys
 from bluepy import btle
 import paho.mqtt.client as mqtt
@@ -28,14 +29,16 @@ from datetime import datetime
 
 import Xiaomi_Scale_Body_Metrics
 
+CONFIG = json.load(open('/data/config.json'))
+
 # Configuraiton...
-MISCALE_MAC = os.getenv('MISCALE_MAC', '')
-MQTT_USERNAME = os.getenv('MQTT_USERNAME', '')
-MQTT_PASSWORD = os.getenv('MQTT_PASSWORD', '')
-MQTT_HOST = os.getenv('MQTT_HOST', '127.0.0.1')
-MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
-MQTT_TIMEOUT = int(os.getenv('MQTT_TIMEOUT', 60))
-MQTT_PREFIX = os.getenv('MQTT_PREFIX', '')
+MISCALE_MAC = CONFIG.get('miscale_mac', '')
+MQTT_USERNAME = CONFIG.get('mqtt_username', '')
+MQTT_PASSWORD = CONFIG.get('mqtt_password', '')
+MQTT_HOST = CONFIG.get('mqtt_host', '127.0.0.1')
+MQTT_PORT = CONFIG.get('mqtt_port', 1883)
+MQTT_TIMEOUT = CONFIG.get('mqtt_timeout', 60)
+MQTT_PREFIX = CONFIG.get('mqtt_prefix', '')
 
 # User Variables...
 
@@ -45,16 +48,16 @@ USER1_NAME = os.getenv('USER1_NAME', 'David') # Name of the user
 USER1_HEIGHT = int(os.getenv('USER1_HEIGHT', '175')) # Height (in cm) of the user
 USER1_DOB = os.getenv('USER1_DOB', '1988-09-30') # DOB (in yyyy-mm-dd format)
 
-USER2_LT = int(os.getenv('USER2_LT', '55')) # If the weight is less than this number, we'll assume that we're weighing User #2
-USER2_SEX = os.getenv('USER2_SEX', 'female')
-USER2_NAME = os.getenv('USER2_NAME', 'Joanne') # Name of the user
-USER2_HEIGHT = int(os.getenv('USER2_HEIGHT', '155')) # Height (in cm) of the user
-USER2_DOB = os.getenv('USER2_DOB', '1988-10-20') # DOB (in yyyy-mm-dd format)
+# USER2_LT = int(os.getenv('USER2_LT', '55')) # If the weight is less than this number, we'll assume that we're weighing User #2
+# USER2_SEX = os.getenv('USER2_SEX', 'female')
+# USER2_NAME = os.getenv('USER2_NAME', 'Joanne') # Name of the user
+# USER2_HEIGHT = int(os.getenv('USER2_HEIGHT', '155')) # Height (in cm) of the user
+# USER2_DOB = os.getenv('USER2_DOB', '1988-10-20') # DOB (in yyyy-mm-dd format)
 
-USER3_SEX = os.getenv('USER3_SEX', 'male')
-USER3_NAME = os.getenv('USER3_NAME', 'Unknown User') # Name of the user
-USER3_HEIGHT = int(os.getenv('USER3_HEIGHT', '175')) # Height (in cm) of the user
-USER3_DOB = os.getenv('USER3_DOB', '1988-01-01') # DOB (in yyyy-mm-dd format)
+# USER3_SEX = os.getenv('USER3_SEX', 'male')
+# USER3_NAME = os.getenv('USER3_NAME', 'Unknown User') # Name of the user
+# USER3_HEIGHT = int(os.getenv('USER3_HEIGHT', '175')) # Height (in cm) of the user
+# USER3_DOB = os.getenv('USER3_DOB', '1988-01-01') # DOB (in yyyy-mm-dd format)
 
 
 class ScanProcessor():
@@ -78,7 +81,7 @@ class ScanProcessor():
 					   # dev.rssi,
 					   # ('' if dev.connectable else '(not connectable)'))
 				   # , end='')
-			for (sdid, desc, data) in dev.getScanData():
+			for (sdid, _, data) in dev.getScanData():
 				### Xiaomi V1 Scale ###
 				if data.startswith('1d18') and sdid == 22:
 					measunit = data[4:6]
@@ -140,16 +143,16 @@ class ScanProcessor():
 			height = USER1_HEIGHT
 			age = self.GetAge(USER1_DOB)
 			sex = USER1_SEX
-		elif int(weight) < USER2_LT:
-			user = USER2_NAME
-			height = USER2_HEIGHT
-			age = self.GetAge(USER2_DOB)
-			sex = USER2_SEX
-		else:
-			user = USER3_NAME
-			height = USER3_HEIGHT
-			age = self.GetAge(USER3_DOB)
-			sex = USER3_SEX
+		# elif int(weight) < USER2_LT:
+		# 	user = USER2_NAME
+		# 	height = USER2_HEIGHT
+		# 	age = self.GetAge(USER2_DOB)
+		# 	sex = USER2_SEX
+		# else:
+		# 	user = USER3_NAME
+		# 	height = USER3_HEIGHT
+		# 	age = self.GetAge(USER3_DOB)
+		# 	sex = USER3_SEX
 		lib = Xiaomi_Scale_Body_Metrics.bodyMetrics(weight, height, age, sex, 0)
 		message = '{'
 		message += '"Weight":"' + "{:.2f}".format(weight) + '"'
@@ -177,7 +180,7 @@ def main():
 	# while(True):
 	scanner = btle.Scanner().withDelegate(ScanProcessor())
 
-	devices = scanner.scan(5)
+	_ = scanner.scan(5)
 
 if __name__ == "__main__":
 	main()
