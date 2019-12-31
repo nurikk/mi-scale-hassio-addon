@@ -1,6 +1,6 @@
 {
   "name": "Xiaomi Mi Scale",
-  "version": "0.8",
+  "version": "0.9",
   "slug": "xiaomi_mi_scale",
   "description": "Read weight measurements from scale via BLE",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
@@ -15,8 +15,8 @@
     "mqtt_host": "127.0.0.1",
     "mqtt_username": "username",
     "mqtt_password": "password",
-    "mqtt_port": "1883",
-    "mqtt_timeout": "30",
+    "mqtt_port": 1883,
+    "mqtt_timeout": 30,
     "users": [
       {"name": "Roman", "weight_greater_than": 75, "weight_lower_than": 90}
     ]
@@ -25,9 +25,9 @@
     "miscale_mac": "str",
     "mqtt_prefix": "str?",
     "mqtt_host": "str?",
-    "mqtt_port": "int(0,65536)?",
+    "mqtt_port": "port?",
     "mqtt_timeout": "int(1,300)?",
-    "mqtt_username": "port",
+    "mqtt_username": "str",
     "mqtt_password": "str",
     "users": [
       {"name": "str", "weight_greater_than": "int", "weight_lower_than": "int"}
