@@ -38,7 +38,7 @@ MQTT_PASSWORD = CONFIG.get('mqtt_password', '')
 MQTT_HOST = CONFIG.get('mqtt_host', '127.0.0.1')
 MQTT_PORT = CONFIG.get('mqtt_port', 1883)
 MQTT_TIMEOUT = CONFIG.get('mqtt_timeout', 60)
-MQTT_PREFIX = CONFIG.get('mqtt_prefix', '')
+MQTT_PREFIX = CONFIG.get('mqtt_prefix', 'miScale')
 
 # User Variables...
 
