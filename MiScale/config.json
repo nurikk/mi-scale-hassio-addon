@@ -1,6 +1,6 @@
 {
   "name": "Xiaomi Mi Scale",
-  "version": "0.9",
+  "version": "0.10",
   "slug": "xiaomi_mi_scale",
   "description": "Read weight measurements from scale via BLE",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
