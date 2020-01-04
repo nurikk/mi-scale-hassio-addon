@@ -9,7 +9,7 @@
   "devices": [],
   "host_network": true,
   "privileged": ["NET_ADMIN", "SYS_ADMIN"],
-  "options" : {
+  "options": {
     "miscale_mac": "00:00:00:00:00:00",
     "mqtt_prefix": "miScale",
     "mqtt_host": "127.0.0.1",
@@ -17,11 +17,9 @@
     "mqtt_password": "password",
     "mqtt_port": 1883,
     "mqtt_timeout": 30,
-    "users": [
-      {"name": "Roman", "weight_greater_than": 75, "weight_lower_than": 90, "height": 180, "sex": "male", "birthdate": "2018-24-01"}
-    ]
+    "users": []
   },
-  "schema" : {
+  "schema": {
     "miscale_mac": "str",
     "mqtt_prefix": "str?",
     "mqtt_host": "str?",
@@ -29,8 +27,13 @@
     "mqtt_timeout": "int(1,300)?",
     "mqtt_username": "str",
     "mqtt_password": "str",
-    "users": [
-      {"name": "str", "weight_greater_than": "int", "weight_lower_than": "int", "height": 100, "sex": "list(male|female)", "birthdate": "match(^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$)"}
-    ]
+    "users": [{
+      "name": "str",
+      "weight_greater_than": "int",
+      "weight_lower_than": "int",
+      "height": "int",
+      "sex": "list(male|female)",
+      "birthdate": "match(^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$)"
+    }]
   }
 }
