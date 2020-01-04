@@ -49,8 +49,7 @@ class ScanProcessor():
 					if measunit.startswith(('22', 'a2')): unit = 'kg' ; measured = measured / 2
 
 					if unit:
-						print('')
-						self._publish(round(measured, 2), unit, "", 0)
+						self._publish(round(measured, 2), unit, None, 0)
 					else:
 						print("Scale is sleeping.")
 
@@ -66,7 +65,6 @@ class ScanProcessor():
 					miimpedance = str(int((data[24:26] + data[22:24]), 16))
 
 					if unit:
-						print('')
 						self._publish(round(measured, 2), unit, str(mitdatetime), miimpedance)
 					else:
 						print("Scale is sleeping.")
@@ -74,7 +72,7 @@ class ScanProcessor():
 
 			if not dev.scanData:
 				print ('\t(no data)')
-			print
+
 
 	def _start_client(self):
 		self.mqtt_client = mqtt.Client()
@@ -91,26 +89,27 @@ class ScanProcessor():
 	def _publish(self, weight, unit, mitdatetime, miimpedance):
 		if not self.connected:
 			raise Exception('not connected to MQTT server')
-		unknown = {
-			'name': 'Unknown',
-			'height': None,
-			'birthdate': None,
-			'sex': None
-		}
+
 		check_user = lambda u, w: u['weight_greater_than'] < w < u['weight_lower_than']
-		user = next((u for u in USERS if check_user(u, weight)), unknown)
-		user = user['name']
-		height = user['height']
-		age = self.getAge(user['birthdate'])
-		sex = user['sex']
-		lib = XSBM.bodyMetrics(weight, height, age, sex, miimpedance)
+
+		user = next((u for u in USERS if check_user(u, weight)))
+		user_name = user['name'] if 'name' in user else 'Unknown'
 		message = {
-			'Weight': weight,
-			'BMI': lib.getBMI(),
-			'Basal Metabolism': lib.getBMR(),
-			'Visceral Fat': lib.getVisceralFat(),
-			'TimeStamp': mitdatetime
+			'Weight': weight
 		}
+		if user is not None:
+			height = user['height']
+			age = self.getAge(user['birthdate'])
+			sex = user['sex']
+
+			lib = XSBM.bodyMetrics(weight, height, age, sex, miimpedance)
+			message['BMI'] =  lib.getBMI()
+			message['Basal Metabolism']: lib.getBMR()
+			message['Visceral Fat'] = lib.getVisceralFat()
+
+		if mitdatetime:
+			message['TimeStamp'] = mitdatetime
+
 
 		if miimpedance > 0:
 			message['Lean Body Mass'] = lib.getLBMCoefficient()
@@ -121,8 +120,8 @@ class ScanProcessor():
 			message['Protein'] = lib.getProteinPercentage()
 
 
-		self.mqtt_client.publish(MQTT_PREFIX + '/' + user + '/weight', message, qos=1, retain=True)
-		print('\tSent data to topic %s: %s' % (MQTT_PREFIX + '/' + user + '/weight', message))
+		self.mqtt_client.publish(MQTT_PREFIX + '/' + user_name + '/weight', json.dumps(message), qos=1, retain=True)
+		print('\tSent data to topic %s: %s' % (MQTT_PREFIX + '/' + user_name + '/weight', json.dumps(message)))
 
 def main():
 	scanner = btle.Scanner().withDelegate(ScanProcessor())
