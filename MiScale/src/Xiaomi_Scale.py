@@ -64,7 +64,7 @@ class ScanProcessor():
 					mitdatetime = datetime.strptime(str(int((data[10:12] + data[8:10]), 16)) + " " + str(int((data[12:14]), 16)) +" "+ str(int((data[14:16]), 16)) +" "+ str(int((data[16:18]), 16)) +" "+ str(int((data[18:20]), 16)) +" "+ str(int((data[20:22]), 16)), "%Y %m %d %H %M %S")
 					miimpedance = int((data[24:26] + data[22:24]), 16)
 					if miimpedance > 3000:
-						immiimpedanceped = None
+						miimpedance = None
 
 					if unit:
 						self._publish(round(measured, 2), unit, str(mitdatetime), miimpedance)
