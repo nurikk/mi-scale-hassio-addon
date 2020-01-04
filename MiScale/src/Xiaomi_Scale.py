@@ -62,7 +62,7 @@ class ScanProcessor():
 					if measunit == "03": unit = 'lbs'
 					if measunit == "02": unit = 'kg' ; measured = measured / 2
 					mitdatetime = datetime.strptime(str(int((data[10:12] + data[8:10]), 16)) + " " + str(int((data[12:14]), 16)) +" "+ str(int((data[14:16]), 16)) +" "+ str(int((data[16:18]), 16)) +" "+ str(int((data[18:20]), 16)) +" "+ str(int((data[20:22]), 16)), "%Y %m %d %H %M %S")
-					miimpedance = str(int((data[24:26] + data[22:24]), 16))
+					miimpedance = int((data[24:26] + data[22:24]), 16)
 
 					if unit:
 						self._publish(round(measured, 2), unit, str(mitdatetime), miimpedance)
@@ -92,36 +92,37 @@ class ScanProcessor():
 
 		check_user = lambda u, w: u['weight_greater_than'] < w < u['weight_lower_than']
 
-		user = next((u for u in USERS if check_user(u, weight)))
-		user_name = user['name'] if 'name' in user else 'Unknown'
+		user = next((u for u in USERS if check_user(u, weight)), None)
+		user_name = 'Unknown'
 		message = {
 			'Weight': weight
 		}
 		if user is not None:
+			user_name = user['name']
 			height = user['height']
 			age = self.getAge(user['birthdate'])
 			sex = user['sex']
 
 			lib = XSBM.bodyMetrics(weight, height, age, sex, miimpedance)
-			message['BMI'] =  lib.getBMI()
-			message['Basal Metabolism']: lib.getBMR()
-			message['Visceral Fat'] = lib.getVisceralFat()
+			message['BMI'] =  round(lib.getBMI(), 2)
+			message['Basal Metabolism'] = round(lib.getBMR(), 2)
+			message['Visceral Fat'] = round(lib.getVisceralFat(), 2)
+			if miimpedance > 0:
+				message['Lean Body Mass'] = round(lib.getLBMCoefficient(), 2)
+				message['Body Fat'] = round(lib.getFatPercentage() ,2)
+				message['Water'] = round(lib.getWaterPercentage() ,2)
+				message['Bone Mass'] = round(lib.getBoneMass() ,2)
+				message['Muscle Mass'] = round(lib.getMuscleMass() ,2)
+				message['Protein'] = round(lib.getProteinPercentage() ,2)
 
-		if mitdatetime:
+		if mitdatetime is not None:
 			message['TimeStamp'] = mitdatetime
 
 
-		if miimpedance > 0:
-			message['Lean Body Mass'] = lib.getLBMCoefficient()
-			message['Body Fat'] = lib.getFatPercentage()
-			message['Water'] = lib.getWaterPercentage()
-			message['Bone Mass'] = lib.getBoneMass()
-			message['Muscle Mass'] = lib.getMuscleMass()
-			message['Protein'] = lib.getProteinPercentage()
 
 
 		self.mqtt_client.publish(MQTT_PREFIX + '/' + user_name + '/weight', json.dumps(message), qos=1, retain=True)
-		print('\tSent data to topic %s: %s' % (MQTT_PREFIX + '/' + user_name + '/weight', json.dumps(message)))
+		print('Sent data to topic %s: %s' % (MQTT_PREFIX + '/' + user_name + '/weight', json.dumps(message, sort_keys=True, indent=4)))
 
 def main():
 	scanner = btle.Scanner().withDelegate(ScanProcessor())
