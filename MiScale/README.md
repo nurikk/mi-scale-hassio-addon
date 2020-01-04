@@ -8,8 +8,20 @@ Hass.io addon that integrates the Xiaomi Body Composition Scale 1 and 2 into Hom
 1. Retrieve the scale's MAC Address based on the Xiaomi Mi Fit app.
 
 2. Install the addon (takes a while as the container is built locally)
+3. Configure addon
 
-3. Start the addon
+Example user:
+```json
+ {
+      "sex": "male",
+      "birthdate": "1990-01-24",
+      "height": 180,
+      "name": "John",
+      "weight_greater_than": 80,
+      "weight_lower_than": 90
+    }
+```
+4. Start the addon
 
 ## Home-Assistant Setup:
 Under the `sensor` block, enter as many blocks as users configured in your environment variables:
@@ -30,6 +42,8 @@ Under the `sensor` block, enter as many blocks as users configured in your envir
     icon: mdi:human-pregnant
 
 ```
+
+
 
 ![Mi Scale](Screenshots/HA_Lovelace_Card.png)
 
