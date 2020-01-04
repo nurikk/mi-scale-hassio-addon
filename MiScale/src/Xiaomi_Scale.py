@@ -10,7 +10,7 @@ import Xiaomi_Scale_Body_Metrics as XSBM
 from bluepy import btle
 from datetime import datetime
 
-CONFIG = json.load(open('/data/config.json'))
+CONFIG = json.load(open('/data/options.json'))
 
 MISCALE_MAC = CONFIG.get('miscale_mac', '')
 MQTT_USERNAME = CONFIG.get('mqtt_username', '')
