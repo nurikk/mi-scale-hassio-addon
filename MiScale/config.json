@@ -6,7 +6,7 @@
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
   "startup": "before",
   "boot": "auto",
-  "devices": ["/dev/ttyAMA0:/dev/ttyAMA0:rwm"],
+  "devices": [],
   "host_network": true,
   "privileged": ["NET_ADMIN", "SYS_ADMIN"],
   "options" : {
