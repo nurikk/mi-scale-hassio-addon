@@ -1,6 +1,6 @@
 {
   "name": "Xiaomi Mi Scale",
-  "version": "0.11",
+  "version": "0.12",
   "slug": "xiaomi_mi_scale",
   "description": "Read weight measurements from scale via BLE",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
@@ -18,7 +18,7 @@
     "mqtt_port": 1883,
     "mqtt_timeout": 30,
     "users": [
-      {"name": "Roman", "weight_greater_than": 75, "weight_lower_than": 90}
+      {"name": "Roman", "weight_greater_than": 75, "weight_lower_than": 90, "height": 180, "sex": "male", "birthdate": "2018-24-01"}
     ]
   },
   "schema" : {
@@ -30,7 +30,7 @@
     "mqtt_username": "str",
     "mqtt_password": "str",
     "users": [
-      {"name": "str", "weight_greater_than": "int", "weight_lower_than": "int"}
+      {"name": "str", "weight_greater_than": "int", "weight_lower_than": "int", "height": 100, "sex": "list(male|female)", "birthdate": "match(^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$)"}
     ]
   }
 }
