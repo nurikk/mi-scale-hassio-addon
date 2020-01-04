@@ -1,6 +1,6 @@
 {
   "name": "Xiaomi Mi Scale",
-  "version": "0.12",
+  "version": "0.13",
   "slug": "xiaomi_mi_scale",
   "description": "Read weight measurements from scale via BLE",
   "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
@@ -33,7 +33,7 @@
       "weight_lower_than": "int",
       "height": "int",
       "sex": "list(male|female)",
-      "birthdate": "match(^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$)"
+      "birthdate": "match(\\d{4}-\\d{2}-\\d{2})"
     }]
   }
 }
