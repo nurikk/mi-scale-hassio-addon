@@ -49,7 +49,7 @@ class ScanProcessor():
 					if measunit.startswith(('22', 'a2')): unit = 'kg' ; measured = measured / 2
 
 					if unit:
-						self._publish(round(measured, 2), unit, None, 0)
+						self._publish(round(measured, 2), unit, None, None)
 					else:
 						print("Scale is sleeping.")
 
@@ -63,6 +63,8 @@ class ScanProcessor():
 					if measunit == "02": unit = 'kg' ; measured = measured / 2
 					mitdatetime = datetime.strptime(str(int((data[10:12] + data[8:10]), 16)) + " " + str(int((data[12:14]), 16)) +" "+ str(int((data[14:16]), 16)) +" "+ str(int((data[16:18]), 16)) +" "+ str(int((data[18:20]), 16)) +" "+ str(int((data[20:22]), 16)), "%Y %m %d %H %M %S")
 					miimpedance = int((data[24:26] + data[22:24]), 16)
+					if miimpedance > 3000:
+						immiimpedanceped = None
 
 					if unit:
 						self._publish(round(measured, 2), unit, str(mitdatetime), miimpedance)
@@ -107,7 +109,7 @@ class ScanProcessor():
 			message['BMI'] =  round(lib.getBMI(), 2)
 			message['Basal Metabolism'] = round(lib.getBMR(), 2)
 			message['Visceral Fat'] = round(lib.getVisceralFat(), 2)
-			if miimpedance > 0:
+			if miimpedance is not None:
 				message['Lean Body Mass'] = round(lib.getLBMCoefficient(), 2)
 				message['Body Fat'] = round(lib.getFatPercentage() ,2)
 				message['Water'] = round(lib.getWaterPercentage() ,2)
